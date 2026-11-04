@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>It Takes Two to Tangram</title>
+<meta name="description" content="It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly">
+<meta property="og:title" content="It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly">
+<meta property="og:image" content="images/fig1_teaser.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#ffffff; --bg-alt:#f6f7fb; --text:#1c2030; --muted:#5b6275; --line:#e4e7ef;
+  --accent:#e5487f; --accent2:#3b6fe0; --accent3:#f2b42d;
+  --card:#ffffff; --shadow:0 10px 30px rgba(28,32,48,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0e1018; --bg-alt:#141724; --text:#eceef6; --muted:#9aa1b6; --line:#252a3b; --card:#171b2a; --shadow:0 10px 30px rgba(0,0,0,.4); }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent2);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1020px;margin:0 auto;padding:0 24px}
+.wrap.wide{max-width:1320px}
+.narrow{max-width:820px;margin:0 auto}
+
+.venue{display:inline-block;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);padding:5px 12px;border-radius:99px;margin-bottom:18px}
+
+nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:22px;align-items:center;height:54px;overflow-x:auto;white-space:nowrap}
+nav a{color:var(--muted);font-size:.9rem;font-weight:500}
+nav a:hover{color:var(--text);text-decoration:none}
+nav .brand{font-weight:800;color:var(--text);margin-right:auto;letter-spacing:-.02em}
+
+.hero{padding:64px 0 36px;text-align:center;
+  background:
+   radial-gradient(600px 300px at 15% 0%, color-mix(in srgb,var(--accent) 14%,transparent), transparent 70%),
+   radial-gradient(600px 300px at 85% 10%, color-mix(in srgb,var(--accent2) 14%,transparent), transparent 70%);}
+h1{font-size:clamp(1.8rem,4.4vw,3rem);line-height:1.15;letter-spacing:-.03em;margin:0 0 22px;font-weight:800}
+h1 .sub{display:block;font-size:.62em;color:var(--muted);font-weight:600;margin-top:8px;letter-spacing:-.01em}
+.authors{font-size:1.08rem;margin-bottom:26px}
+
+.buttons{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:8px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:99px;background:var(--text);color:var(--bg);font-weight:600;font-size:.95rem;transition:transform .15s;box-shadow:var(--shadow)}
+.btn:hover{transform:translateY(-2px);text-decoration:none}
+.btn svg{width:18px;height:18px;fill:currentColor}
+.btn.off{opacity:.45;pointer-events:none}
+.btn.off::after{content:"soon";font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;background:var(--bg);color:var(--text);border-radius:99px;padding:1px 7px}
+
+section{padding:56px 0}
+section.alt{background:var(--bg-alt)}
+h2{font-size:1.8rem;letter-spacing:-.02em;margin:0 0 20px;text-align:center;font-weight:800}
+h3{font-size:1.15rem;margin:30px 0 8px}
+p{margin:0 0 14px}
+.text p{font-size:1.04rem;text-align:justify;hyphens:auto}
+
+figure{margin:28px 0;text-align:center}
+figure img{max-width:100%;height:auto;border-radius:14px;box-shadow:var(--shadow);background:#fff;display:block;margin:0 auto}
+figure img + img, figure .ph + img, figure img + .ph, figure .ph + .ph{margin-top:16px}
+figcaption{margin-top:12px;font-size:.92rem;color:var(--muted);text-align:left}
+.ph{display:flex;align-items:center;justify-content:center;min-height:200px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.85rem;padding:20px;background:var(--bg-alt)}
+
+.video{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);background:#000}
+.video iframe,.video video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video .ph{position:absolute;inset:0;border-radius:0;border:0;background:#10131d;color:#8d94aa}
+
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin:22px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow)}
+.card .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:99px;margin-bottom:10px;color:#fff}
+.t1{background:var(--accent3);color:#2b2100!important}.t2{background:var(--accent2)}.t3{background:var(--accent)}
+.card p{margin:0;color:var(--muted);font-size:.93rem}
+
+.tbl{overflow-x:auto;border-radius:14px;border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:560px}
+th,td{padding:10px 14px;text-align:right;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--bg-alt);font-weight:600;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+tr.group td{background:var(--bg-alt);font-weight:700;text-align:left;font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+tr.ours td{font-weight:700;background:color-mix(in srgb,var(--accent) 8%,transparent)}
+tbody tr:last-child td{border-bottom:0}
+.tblcap{margin-top:12px;font-size:.92rem;color:var(--muted)}
+
+ul.contrib{padding-left:20px}ul.contrib li{margin-bottom:10px}
+
+.bib{position:relative}
+pre{margin:0;background:#0f1320;color:#dbe1f5;padding:22px;border-radius:14px;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.6}
+.copy{position:absolute;top:12px;right:12px;background:#222a44;color:#dbe1f5;border:0;border-radius:8px;padding:6px 12px;font:600 .78rem Inter;cursor:pointer}
+.copy:hover{background:#2f3a5e}
+
+footer{padding:30px 0 44px;border-top:1px solid var(--line)}
+@media(max-width:600px){section{padding:40px 0}.hero{padding-top:44px}}
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="wrap">
+    <span class="brand">GOMA</span>
+    <a href="#abstract">Abstract</a>
+    <a href="#video">Video</a>
+    <a href="#method">GOMA</a>
+    <a href="#benchmark">TangramBench</a>
+    <a href="#results">Experiments</a>
+    <a href="#bibtex">BibTeX</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="venue">Under review · 2026</span>
+    <h1>It Takes Two to Tangram:<span class="sub">Multi-Agent Object Centric Reinforcement Learning for Assembly</span></h1>
+    <div class="authors">Anonymous Authors</div>
+
+    <div class="buttons">
+      <a class="btn" id="btn-paper" href="#"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6V2zm8 1.5V8h4.5L14 3.5zM8 12v1.5h8V12H8zm0 3v1.5h8V15H8z"/></svg>Paper</a>
+      <a class="btn" id="btn-arxiv" href="#"><svg viewBox="0 0 24 24"><path d="M4 3h16v18H4V3zm3 4v2h10V7H7zm0 4v2h10v-2H7zm0 4v2h6v-2H7z"/></svg>arXiv</a>
+      <a class="btn" id="btn-code" href="#"><svg viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.38 7.86 10.9.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 015.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>Code</a>
+      <a class="btn" id="btn-video" href="#video"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>Video</a>
+    </div>
+  </div>
+</header>
+
+<!-- TEASER (Fig. 1) -->
+<section style="padding-top:20px">
+  <div class="wrap wide">
+    <figure>
+      <img src="images/fig1_teaser.png" alt="Fig. 1">
+      <figcaption>Fig. 1: GOMA solving the tangram puzzle on our TangramBench. Given the target assembly (right), we focus on the complex task of coordinating feasible object motions constrained to the support plane. GOMA predicts object motions that avoid deadlocks and collisions under varying clearance to achieve the final assembly.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ABSTRACT -->
+<section id="abstract" class="alt">
+  <div class="wrap narrow text">
+    <h2>Abstract</h2>
+    <p>Geometric assembly requires fine spatiotemporal coordination to place parts without causing collisions or deadlocks under tight clearances. To address this, we present an object-centric reinforcement learning framework that treats each part as an agent and learns a shared policy for continuous assembly control. A graph neural network represents the pieces, their target poses, and their spatial relationships, and predicts translational and angular velocities for each component. Per-agent proximal policy optimization with a centralized graph critic directly learns motion and temporal coordination within a single feedback policy. We study this formulation through planar Tangram assembly, where pieces must slide and rotate into a given configuration while remaining on the assembly surface. Procedural generation of target configurations and randomized initial arrangements support training and evaluation across diverse assembly problems. Our experiments isolate the roles of relational structure and multi-agent optimization, and compare learned control with sampling-based planning. We demonstrate concurrent assembly in simulation and transfer the policy to sequential execution on a real robot, as our object-centric formulation decouples learned assembly coordination from low-level physical control.</p>
+  </div>
+</section>
+
+<!-- VIDEO -->
+<section id="video">
+  <div class="wrap narrow">
+    <h2>Video</h2>
+    <div class="video" id="video-box"></div>
+  </div>
+</section>
+
+<!-- GOMA -->
+<section id="method" class="alt">
+  <div class="wrap narrow text">
+    <h2>GOMA</h2>
+    <p>Thus, we introduce Graph networks for Object-centric Multi-agent Assembly (GOMA), a graph-based multi-agent approach to geometric assembly. GOMA represents each part to be assembled as a cooperative agent and uses a shared policy trained with Multi-Agent Proximal Policy Optimization (MAPPO) to predict continuous object motions from a relational representation of the assembly state. A graph neural network (GNN) encodes interactions between parts, combining an object-centric representation with multi-agent learning toward a shared assembly objective. Our central question is whether an object-centric multi-agent formulation provides an effective basis for learning coordinated assembly. We further investigate which aspects of the representation and learning formulation matter for coordination, including how information about other parts informs each agent’s actions.</p>
+    <figure>
+      <img src="images/fig3_method.png" alt="Fig. 3">
+      <figcaption>Fig. 3: GOMA maps a graph of pieces and assigned target poses to per-piece velocity commands. Independent graph encoders produce piece embeddings for a shared policy head and a global embedding for the critic.</figcaption>
+    </figure>
+
+    <h3>Contributions</h3>
+    <p>In summary, our contributions are:</p>
+    <ul class="contrib">
+      <li>An object-level multi-agent formulation of geometric assembly that learns simultaneous part motions and temporal coordination through a shared continuous-control policy.</li>
+      <li>An empirical investigation of relational state representations and per-agent policy optimization, with comparisons against joint-action learning and sampling-based planning.</li>
+      <li>TangramBench, a procedural benchmark suite for geometric assembly, with physical pieces and evaluations of concurrent simulation control and sequential robot execution.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- TANGRAMBENCH -->
+<section id="benchmark">
+  <div class="wrap">
+    <div class="narrow text">
+      <h2>TangramBench</h2>
+      <p>To study this problem, we also introduce TangramBench, a procedural benchmark suite for planar geometric assembly based on the game of Tangram. The classical Tangram puzzle consists of seven geometric pieces (see Fig. 1) that must be arranged to form a target silhouette. Despite its small set of simple parts, tightly packed configurations create strong geometric dependencies between their motions, making Tangram a compact setting for studying coordinated assembly.</p>
+      <p>Because the piece-to-target assignment is provided, TangramBench deliberately removes assignment and shape-matching ambiguities and isolates the coordination problem. That is, TangramBench central question is:</p>
+      <p style="text-align:center"><i>How should the pieces move to their known targets without preventing one another from reaching them?</i></p>
+    </div>
+
+    <figure class="narrow">
+      <img src="images/fig2_benchmark.png" alt="Fig. 2">
+      <figcaption>Fig. 2: TangramBench provides a graded benchmark for planar geometric assembly, ranging from the three-piece TangramBench-Trio to seven-piece TangramBench-Cluster and tightly constrained TangramBench-Puzzle configurations. We provide simulation-ready models, together with a robot-compatible physical counterpart consisting of 3D-printed pieces and an insertion tool for planar manipulation.</figcaption>
+    </figure>
+
+    <div class="narrow text"><p>To expose different degrees of geometric coupling, TangramBench contains three levels of increasing difficulty.</p></div>
+    <div class="grid3">
+      <div class="card"><span class="tag t1">(i) Trio</span><p>TangramBench-Trio contains only three pieces—the two large triangles and the medium triangle—and provides a reduced setting in which coordination can be studied without the constraints induced by the full puzzle.</p></div>
+      <div class="card"><span class="tag t2">(ii) Cluster</span><p>TangramBench-Cluster uses all seven pieces and generates compact target configurations procedurally. Pieces are first scattered and then attracted toward a common center until contact prevents further motion, with configurations containing interpenetrations rejected. This process produces irregular but relatively open assemblies, for which most target slots remain accessible from outside the configuration.</p></div>
+      <div class="card"><span class="tag t3">(iii) Puzzle</span><p>TangramBench-Puzzle contains tightly packed Tangram configurations constructed by joining pieces edge-to-edge at compatible orientations, making them closer to classical Tangram figures. These layouts create enclosed target slots and narrow access corridors, such that placing one piece can remove feasible approaches to another and the order of insertion becomes consequential.</p></div>
+    </div>
+    <div class="narrow text">
+      <p>Despite having the same median inter-piece spacing of 37mm, TangramBench-Cluster instances have a median enclosure of only 9%, compared with 57% for TangramBench-Puzzle instances. This increased enclosure makes TangramBench-Puzzle substantially more constrained, as feasible approach directions are reduced and successful assembly depends more strongly on coordinated sequencing of the pieces. All configurations are generated procedurally from fixed seeds, allowing disjoint training and evaluation pools of arbitrary size to be reproduced. Here, we provide approximately 1M, 1.1M, and 955k training configurations for TangramBench-Trio, Cluster, and Puzzle, respectively. Additionally, we provide 258 held-out configurations for each evaluation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIMENTS -->
+<section id="results" class="alt">
+  <div class="wrap">
+    <div class="narrow text">
+      <h2>Experiments</h2>
+      <h3>What Structure Enables Coordinated Assembly?</h3>
+      <p>First, to understand the effect of each element in our architecture, we isolate the main components of GOMA and analyze training and evaluation performance on TangramBench-Trio. We compare GOMA against three architectural variants. Single-agent PPO discards both the graph and the multi-agent formulation. Here, an MLP maps the concatenated state of all pieces and targets, in a fixed order, to the velocities of all pieces, and is trained using a single clipped objective and the mean per-piece reward. MLP-MAPPO retains the per-agent formulation, including a shared policy, per-piece advantages, and a centralized critic, but replaces the graph representation with an MLP operating on each piece’s local state. Finally, GOMA-J retains the graph actor and critic, but replaces the per-agent MAPPO objective with a single joint team reward. Fig. 4-top shows the evolution of task success, the fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training for all four architectures, averaged over five seeds. 
+      </p>
+    </div>
+
+    <figure>
+      <img src="images/fig4_architecture.png" alt="Fig. 4 (top)">
+      <img src="images/fig4_reward.png" alt="Fig. 4 (bottom)">
+      <figcaption>Fig. 4: Policy ablations. On the top row, we show the architecture ablation on TangramBench-Trio. Here we report task success, fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training. On the bottom, the effect of the reward formulation. We ablate the shared team reward and inter-piece contact cost.</figcaption>
+    </figure>
+
+    <div class="narrow text">
+      <h3>What Drives Coordinated Behavior?</h3>
+      <p>Next, we study how the reward formulation influences the behavior learned by GOMA. We consider two ablations here and evaluate them on TangramBench-Clusters. In ”GOMA, no team reward”, we remove the shared terms, i.e., the maximum-distance penalty and the global completion bonus, leaving each agent to optimize only its individual reward. In ”GOMA, no contact cost”, we remove the inter-piece contact penalty. All other reward terms, architectures, and training parameters remain unchanged. In Fig. 4-bottom we again show the evolution of task success, the fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training, all averaged over five seeds.
+      </p>
+      <p>We further evaluate these reward variants as the number of pieces increases. Fig. 5 compares success on assemblies containing three, five, six, and seven pieces, testing whether the contribution of the shared reward becomes more pronounced as the number of simultaneously interacting pieces grows. We trained on a scene with seven objects and used this trained policy for evaluation of all different piece counts.</p>
+    </div>
+
+    <figure class="narrow">
+      <img src="images/fig5_piece_count.png" alt="Fig. 5">
+      <figcaption>Fig. 5: Success comparison on assemblies containing a different piece count.</figcaption>
+    </figure>
+
+    <div class="narrow text">
+      <h3>How Does Learned Coordination Compare with Classical Planning?</h3>
+      <p>Finally, we compare GOMA against myopic and sampling-based motion planning. An attractive-only artifical potential field (APF) serves as the myopic baseline. It drives every piece independently and straight toward its target, using the same tracking controller as the planners. Joint rapidly-exploring random tree (RRT) (RRT-J) plans one path for all pieces at once with RRT-Connect in the 21-dimensional configuration space and with mesh collision checks. Per-piece RRT (RRT-P) plans a 3-dimensional path for every piece against the start poses of the others and executes all paths at once. Both planners are also evaluated with a replan mode, where a new plan is generated every 5s. This is added so that they can react to the movements of other pieces. Under one-piece-at-a-time execution, the joint plan is followed piece by piece, and the per-piece paths are planned in sequence with the earlier pieces assumed at their goals. All methods receive the same target assignments and the same initial configurations. The planners are given the 117 of 258 held-out instances whose start arrangement passes their collision check and a 150 s episode, so that planning time does not decide the outcome. In Tab. I we compare the methods on TangramBench-Cluster and TangramBench-Puzzle. We report assembly success, final position error, the fraction of control steps with inter-piece contact, the median time to completion, and the computation time at inference.</p>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Method</th><th>Succ. (%)</th><th>Err. (cm)</th><th>Contact (%)</th><th>Time (s)</th><th>Compute</th></tr></thead>
+        <tbody>
+          <tr class="group"><td colspan="6">TangramBench-Cluster</td></tr>
+          <tr class="ours"><td>GOMA (ours)</td><td>75</td><td>1.0</td><td>4</td><td>8</td><td>0.68 ms</td></tr>
+          <tr><td>APF</td><td>3</td><td>3.8</td><td>99</td><td>80</td><td>≈ 0</td></tr>
+          <tr><td>RRT-J</td><td>73</td><td>1.9</td><td>44</td><td>20</td><td>774 ms</td></tr>
+          <tr><td>RRT-J +replan</td><td>98</td><td>0.3</td><td>12</td><td>21</td><td>49 ms</td></tr>
+          <tr><td>RRT-P</td><td>3</td><td>4.0</td><td>98</td><td>119</td><td>42 ms</td></tr>
+          <tr><td>RRT-P +replan</td><td>9</td><td>3.2</td><td>95</td><td>85</td><td>6.7 ms</td></tr>
+          <tr class="group"><td colspan="6">TangramBench-Puzzle</td></tr>
+          <tr class="ours"><td>GOMA (ours)</td><td>41</td><td>1.7</td><td>4</td><td>24</td><td>0.68 ms</td></tr>
+          <tr><td>APF</td><td>0</td><td>4.3</td><td>100</td><td>–</td><td>≈ 0</td></tr>
+          <tr><td>RRT-J</td><td>58</td><td>3.3</td><td>59</td><td>24</td><td>6.8 s</td></tr>
+          <tr><td>RRT-J +replan</td><td>88</td><td>1.5</td><td>37</td><td>43</td><td>1.1 s</td></tr>
+          <tr><td>RRT-P</td><td>0</td><td>4.5</td><td>99</td><td>–</td><td>48 ms</td></tr>
+          <tr><td>RRT-P +replan</td><td>0</td><td>4.1</td><td>99</td><td>–</td><td>0.20 ms</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tblcap narrow">TABLE I: GOMA against the APF controller and joint (RRT-J) and per-piece (RRT-P) RRT planning, planned once or replanned every 5 s, on the held-out TangramBench-Cluster and TangramBench-Puzzle.</p>
+
+    <div class="narrow text" style="margin-top:20px">
+      <p>These results highlight the importance of coordination. Crucially, APF and RRT-P assemble at most 9% of the clusters and none of the puzzles, with inter-piece contact during nearly every control step. Joint planning with replanning achieves the highest success under concurrent execution (98% on TangramBench-Cluster and 88% on TangramBench-Puzzle), compared with 75% and 41% for GOMA. However, its contact rates are also higher. 12% and 37%, respectively, compared with 4% for GOMA on both benchmarks. Additionally, GOMA requires approximately 0.68ms per inference and achieves median completion times of 8 s on TangramBench-Cluster and 24 s on TangramBench-Puzzle, compared with 21 s and 43s for RRT-J with replanning. Thus, GOMA offers fast, low-contact execution, while joint planning with replanning remains more reliable at completing tightly constrained assemblies.</p>
+
+      <h3>Zero-shot Sim2real transfer</h3>
+      <p>To demonstrate the applicability of GOMA beyond simulation, we perform a qualitative zero-shot sim-to-real demonstration on a Franka FR3 manipulator, without additional policy training or fine-tuning. The robot is controlled using the CRISP Cartesian impedance controller and is equipped with the custom square-peg manipulation tool. Piece poses are estimated using a hand–eye calibrated camera setup consisting of a scene-mounted Intel RealSense D435i RGB-D camera for global pose estimation and a wrist-mounted RealSense D405 for close-range localization of the insertion socket. We estimate the pose of each piece using FoundationPose, with HSV color segmentation providing an individual mask for each of the seven pieces. Known geometric offsets transform the estimated model poses to the corresponding piece centroids, while a geometric consistency filter rejects estimates that would imply physically impossible overlaps.</p>
+      <p>Since the physical robot can manipulate only one piece at a time, we execute the multi-agent policy sequentially. A round-robin strategy selects among unfinished pieces, allowing a piece to remain temporarily in place and be revisited in subsequent rounds. For each selected piece, the wrist-mounted camera first localizes its insertion socket, after which the robot engages the tool and executes the motion predicted by the corresponding agent. During execution, the pose of the manipulated piece is updated from the robot’s forward kinematics, while the poses of the remaining pieces are obtained from perception. The resulting object poses are used to reconstruct the interaction graph before each policy query. Fig. 1 shows the resulting real-world assembly sequence, illustrating that the policy can be deployed on the physical setup without additional real-world training.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section>
+  <div class="wrap narrow text">
+    <h2>Conclusion</h2>
+    <p>In this work, we studied planar geometric assembly as a coordinated multi-object manipulation problem. We introduced TangramBench, a procedural Tangram benchmark with graded levels of geometric coupling, together with simulation and a corresponding real-robot setup. On this benchmark, we formulated assembly from an object-centric multi-agent perspective and proposed GOMA, where each piece is represented as an agent and relational information is exchanged through a graph neural network. Our experiments investigate which components of this formulation enable coordinated behavior and compare the resulting policy with classical motion-planning approaches across increasingly constrained assembly configurations.</p>
+  </div>
+</section>
+
+<!-- BIBTEX -->
+<section id="bibtex" class="alt">
+  <div class="wrap narrow">
+    <h2>BibTeX</h2>
+    <div class="bib">
+      <button class="copy" id="copy-bib">Copy</button>
+<pre id="bibtex-text">@article{goma2026tangram,
+  title   = {It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly},
+  author  = {Anonymous},
+  journal = {Under review},
+  year    = {2026}
+}</pre>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">This page was built with plain HTML/CSS and hosted on GitHub Pages. Feel free to reuse the template.</div>
+</footer>
+
+<script>
+/* ============ EDIT HERE ============ */
+const CONFIG = {
+  paper:   "_ICRA2027__TANGRAM_assembly.pdf",   // e.g. "static/paper.pdf"
+  arxiv:   "",   // e.g. "https://arxiv.org/abs/xxxx.xxxxx"
+  code:    "",   // e.g. "https://github.com/<user>/<repo>"
+  youtube: "",   // main video: YouTube ID
+  mp4:     "videos/FinalSubmissionVersion.mp4",
+};
+/* =================================== */
+
+[["paper","btn-paper"],["arxiv","btn-arxiv"],["code","btn-code"]].forEach(([k,id])=>{
+  const el=document.getElementById(id);
+  if(CONFIG[k]){el.href=CONFIG[k];el.target="_blank";el.rel="noopener"}else{el.classList.add("off")}
+});
+
+const vb=document.getElementById("video-box");
+if(CONFIG.youtube){
+  vb.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${CONFIG.youtube}" title="Video" allowfullscreen allow="accelerometer; encrypted-media; picture-in-picture"></iframe>`;
+}else if(CONFIG.mp4){
+  vb.innerHTML=`<video src="${CONFIG.mp4}" controls playsinline preload="metadata"></video>`;
+}else{
+  vb.innerHTML=`<div class="ph">Video placeholder: set CONFIG.youtube or CONFIG.mp4</div>`;
+}
+
+document.querySelectorAll("figure img").forEach(img=>{
+  img.addEventListener("error",()=>{
+    const d=document.createElement("div");d.className="ph";d.textContent="Add "+img.getAttribute("src");
+    img.replaceWith(d);
+  });
+});
+
+document.getElementById("copy-bib").onclick=async e=>{
+  await navigator.clipboard.writeText(document.getElementById("bibtex-text").innerText);
+  e.target.textContent="Copied!";setTimeout(()=>e.target.textContent="Copy",1500);
+};
+</script>
+</body>
+</html>
