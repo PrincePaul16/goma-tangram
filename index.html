@@ -43,7 +43,12 @@ nav .brand{font-weight:800;color:var(--text);margin-right:auto;letter-spacing:-.
    radial-gradient(600px 300px at 85% 10%, color-mix(in srgb,var(--accent2) 14%,transparent), transparent 70%);}
 h1{font-size:clamp(1.8rem,4.4vw,3rem);line-height:1.15;letter-spacing:-.03em;margin:0 0 22px;font-weight:800}
 h1 .sub{display:block;font-size:.62em;color:var(--muted);font-weight:600;margin-top:8px;letter-spacing:-.01em}
-.authors{font-size:1.08rem;margin-bottom:26px}
+.authors{font-size:1.1rem;margin-bottom:10px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 22px}
+.authors span{white-space:nowrap;font-weight:600}
+.authors sup,.affil sup{font-size:.7em;color:var(--accent);font-weight:700}
+.affil{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 18px;color:var(--muted);font-size:.88rem;margin:0 auto 8px;max-width:900px}
+.affil{margin-bottom:26px}
+.ack p{font-size:.92rem;color:var(--muted);text-align:left}
 
 .buttons{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:8px}
 .btn{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border-radius:99px;background:var(--text);color:var(--bg);font-weight:600;font-size:.95rem;transition:transform .15s;box-shadow:var(--shadow)}
@@ -115,8 +120,23 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
   <div class="wrap">
     <span class="venue">Under review · 2026</span>
     <h1>It Takes Two to Tangram:<span class="sub">Multi-Agent Object Centric Reinforcement Learning for Assembly</span></h1>
-    <div class="authors">Anonymous Authors</div>
-
+    <div class="authors">
+      <span>Paul Knaußt<sup>1</sup></span>
+      <span>Kay Pompetzki<sup>1</sup></span>
+      <span>Nico Bohlinger<sup>1</sup></span>
+      <span>Niklas Funk<sup>5</sup></span>
+      <span>Cristiana de Farias<sup>1</sup></span>
+      <span>Rolf Findeisen<sup>6</sup></span>
+      <span>Jan Peters<sup>1,2,3,4</sup></span>
+    </div>
+    <div class="affil">
+      <span><sup>1</sup>Intelligent Autonomous Systems Lab, Technical University of Darmstadt, Germany</span>
+      <span><sup>2</sup>Hessian.AI, Germany</span>
+      <span><sup>3</sup>German Research Center for AI (DFKI), SAIROL, Germany</span>
+      <span><sup>4</sup>Robotics Institute Germany (RIG)</span>
+      <span><sup>5</sup>Amazon</span>
+      <span><sup>6</sup>Control and Cyber-Physical Systems Laboratory, Technical University of Darmstadt</span>
+    </div>
     <div class="buttons">
       <a class="btn" id="btn-paper" href="#"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6V2zm8 1.5V8h4.5L14 3.5zM8 12v1.5h8V12H8zm0 3v1.5h8V15H8z"/></svg>Paper</a>
       <a class="btn" id="btn-arxiv" href="#"><svg viewBox="0 0 24 24"><path d="M4 3h16v18H4V3zm3 4v2h10V7H7zm0 4v2h10v-2H7zm0 4v2h6v-2H7z"/></svg>arXiv</a>
@@ -205,8 +225,7 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
     <div class="narrow text">
       <h2>Experiments</h2>
       <h3>What Structure Enables Coordinated Assembly?</h3>
-      <p>First, to understand the effect of each element in our architecture, we isolate the main components of GOMA and analyze training and evaluation performance on TangramBench-Trio. We compare GOMA against three architectural variants. Single-agent PPO discards both the graph and the multi-agent formulation. Here, an MLP maps the concatenated state of all pieces and targets, in a fixed order, to the velocities of all pieces, and is trained using a single clipped objective and the mean per-piece reward. MLP-MAPPO retains the per-agent formulation, including a shared policy, per-piece advantages, and a centralized critic, but replaces the graph representation with an MLP operating on each piece’s local state. Finally, GOMA-J retains the graph actor and critic, but replaces the per-agent MAPPO objective with a single joint team reward. Fig. 4-top shows the evolution of task success, the fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training for all four architectures, averaged over five seeds. 
-      </p>
+      <p>First, to understand the effect of each element in our architecture, we isolate the main components of GOMA and analyze training and evaluation performance on TangramBench-Trio. We compare GOMA against three architectural variants. Single-agent PPO discards both the graph and the multi-agent formulation. Here, an MLP maps the concatenated state of all pieces and targets, in a fixed order, to the velocities of all pieces, and is trained using a single clipped objective and the mean per-piece reward. MLP-MAPPO retains the per-agent formulation, including a shared policy, per-piece advantages, and a centralized critic, but replaces the graph representation with an MLP operating on each piece’s local state. Finally, GOMA-J retains the graph actor and critic, but replaces the per-agent MAPPO objective with a single joint team reward. Fig. 4-top shows the evolution of task success, the fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training for all four architectures, averaged over five seeds. Here, we can see a clear progression as structure is introduced into the policy. Single-agent PPO, which uses neither the graph representation nor the multi-agent decomposition, fails to achieve meaningful task success and retains large position and yaw errors throughout training. Introducing the multi-agent formulation alone already provides a substantial improvement. MLP-MAPPO brings almost 90% of pieces within 5cm of their targets, although its overall success plateaus at approximately 50%. Adding relational message passing closes this gap, with both graph-based variants, GOMA and GOMA-J, converging to approximately 90% success and substantially lower final position errors. All methods maintain low contact rates, indicating that the differences arise primarily from their ability to coordinate precise placement rather than simply avoid collisions. Interestingly, GOMA and GOMA-J perform very similarly across all metrics, suggesting that while the per-piece advantages of MAPPO gives the policy a useful inductive bias, explicitly modeling relations between pieces through the GNN is essential for success.</p>
     </div>
 
     <figure>
@@ -217,8 +236,7 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
 
     <div class="narrow text">
       <h3>What Drives Coordinated Behavior?</h3>
-      <p>Next, we study how the reward formulation influences the behavior learned by GOMA. We consider two ablations here and evaluate them on TangramBench-Clusters. In ”GOMA, no team reward”, we remove the shared terms, i.e., the maximum-distance penalty and the global completion bonus, leaving each agent to optimize only its individual reward. In ”GOMA, no contact cost”, we remove the inter-piece contact penalty. All other reward terms, architectures, and training parameters remain unchanged. In Fig. 4-bottom we again show the evolution of task success, the fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training, all averaged over five seeds.
-      </p>
+      <p>Next, we study how the reward formulation influences the behavior learned by GOMA. We consider two ablations here and evaluate them on TangramBench-Clusters. In ”GOMA, no team reward”, we remove the shared terms, i.e., the maximum-distance penalty and the global completion bonus, leaving each agent to optimize only its individual reward. In ”GOMA, no contact cost”, we remove the inter-piece contact penalty. All other reward terms, architectures, and training parameters remain unchanged. In Fig. 4-bottom we again show the evolution of task success, the fraction of pieces within 5cm of their targets, position and yaw errors, and contact rate throughout training, all averaged over five seeds. All three variants learn to move most pieces close to their targets, reaching a similar fraction of pieces within 5cm and comparable final pose errors. The resulting behaviors, however, are considerably different. Removing the contact cost leads to frequent inter-piece contact throughout training, whereas both variants trained with this penalty reduce contacts to near zero. Removing the shared reward has little effect on collision avoidance or coarse goal reaching, but results in lower final assembly success. This suggests that the individual rewards are sufficient to drive pieces toward their respective targets, while the shared terms help translate this individual progress into completion of the assembly as a whole.</p>
       <p>We further evaluate these reward variants as the number of pieces increases. Fig. 5 compares success on assemblies containing three, five, six, and seven pieces, testing whether the contribution of the shared reward becomes more pronounced as the number of simultaneously interacting pieces grows. We trained on a scene with seven objects and used this trained policy for evaluation of all different piece counts.</p>
     </div>
 
@@ -273,6 +291,16 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
   </div>
 </section>
 
+<!-- ACKNOWLEDGMENTS -->
+<section>
+  <div class="wrap narrow ack">
+    <h2>Acknowledgments</h2>
+    <p>This work was supported by the German Federal Ministry of Research, Technology and Space (BMFTR) under the Robotics Institute Germany (RIG) and the DEMETER project (Grant no.: 01DR25003). This work was also supported by a hardware donation from NVIDIA through the Academic Grant Program, and by the Lichtenberg high-performance computer of TU Darmstadt.</p>
+    <p>Claude (Anthropic) was used for grammar polishing and for coding assistance in the experiments and in generating the splash images in Fig. 1. All outputs were reviewed and verified by the authors.</p>
+    <p>This work has been submitted to the IEEE for possible publication. Copyright may be transferred without notice, after which this version may no longer be accessible.</p>
+  </div>
+</section>
+
 <!-- BIBTEX -->
 <section id="bibtex" class="alt">
   <div class="wrap narrow">
@@ -281,7 +309,7 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
       <button class="copy" id="copy-bib">Copy</button>
 <pre id="bibtex-text">@article{goma2026tangram,
   title   = {It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly},
-  author  = {Anonymous},
+  author  = {Knau{\ss}t, Paul and Pompetzki, Kay and Bohlinger, Nico and Funk, Niklas and de Farias, Cristiana and Findeisen, Rolf and Peters, Jan},
   journal = {Under review},
   year    = {2026}
 }</pre>
