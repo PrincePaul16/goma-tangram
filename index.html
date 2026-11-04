@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <title>It Takes Two to Tangram</title>
 <meta name="description" content="It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly">
 <meta property="og:title" content="It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly">
@@ -18,8 +19,10 @@
   --card:#ffffff; --shadow:0 10px 30px rgba(28,32,48,.08);
 }
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#0e1018; --bg-alt:#141724; --text:#eceef6; --muted:#9aa1b6; --line:#252a3b; --card:#171b2a; --shadow:0 10px 30px rgba(0,0,0,.4); }
+  :root:not([data-theme="light"]){ color-scheme:dark; --bg:#0e1018; --bg-alt:#141724; --text:#eceef6; --muted:#9aa1b6; --line:#252a3b; --card:#171b2a; --shadow:0 10px 30px rgba(0,0,0,.4); }
 }
+:root[data-theme="dark"]{ color-scheme:dark; --bg:#0e1018; --bg-alt:#141724; --text:#eceef6; --muted:#9aa1b6; --line:#252a3b; --card:#171b2a; --shadow:0 10px 30px rgba(0,0,0,.4); }
+:root[data-theme="light"]{ color-scheme:light; }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
@@ -36,6 +39,8 @@ nav .wrap{display:flex;gap:22px;align-items:center;height:54px;overflow-x:auto;w
 nav a{color:var(--muted);font-size:.9rem;font-weight:500}
 nav a:hover{color:var(--text);text-decoration:none}
 nav .brand{font-weight:800;color:var(--text);margin-right:auto;letter-spacing:-.02em}
+#theme-toggle{flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;font-size:1.05rem;line-height:1;transition:transform .15s}
+#theme-toggle:hover{transform:scale(1.08)}
 
 .hero{padding:64px 0 36px;text-align:center;
   background:
@@ -113,6 +118,7 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
     <a href="#benchmark">TangramBench</a>
     <a href="#results">Experiments</a>
     <a href="#bibtex">BibTeX</a>
+    <button id="theme-toggle" type="button" aria-label="Toggle night/day mode" title="Toggle night/day mode">🌙</button>
   </div>
 </nav>
 
@@ -352,6 +358,18 @@ document.querySelectorAll("figure img").forEach(img=>{
     img.replaceWith(d);
   });
 });
+
+// night/day toggle
+const themeBtn=document.getElementById("theme-toggle");
+const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches};
+const syncIcon=()=>{themeBtn.textContent=isDark()?"☀️":"🌙"};
+syncIcon();
+themeBtn.onclick=()=>{
+  const next=isDark()?"light":"dark";
+  document.documentElement.dataset.theme=next;
+  try{localStorage.setItem("theme",next)}catch(e){}
+  syncIcon();
+};
 
 document.getElementById("copy-bib").onclick=async e=>{
   await navigator.clipboard.writeText(document.getElementById("bibtex-text").innerText);
