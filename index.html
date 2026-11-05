@@ -7,7 +7,7 @@
 <title>It Takes Two to Tangram</title>
 <meta name="description" content="It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly">
 <meta property="og:title" content="It Takes Two to Tangram: Multi-Agent Object Centric Reinforcement Learning for Assembly">
-<meta property="og:image" content="images/fig1_teaser.png">
+<meta property="og:image" content="images/hero_figure_modern.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -71,6 +71,7 @@ p{margin:0 0 14px}
 
 figure{margin:28px 0;text-align:center}
 figure img{max-width:100%;height:auto;border-radius:14px;box-shadow:var(--shadow);background:#fff;display:block;margin:0 auto}
+figure.teaser img{background:none;box-shadow:none;border-radius:0}
 figure img + img, figure .ph + img, figure img + .ph, figure .ph + .ph{margin-top:16px}
 figcaption{margin-top:12px;font-size:.92rem;color:var(--muted);text-align:left}
 .ph{display:flex;align-items:center;justify-content:center;min-height:200px;border:2px dashed var(--line);border-radius:14px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:.85rem;padding:20px;background:var(--bg-alt)}
@@ -153,9 +154,9 @@ footer{padding:30px 0 44px;border-top:1px solid var(--line)}
 <!-- TEASER (Fig. 1) -->
 <section style="padding-top:20px">
   <div class="wrap wide">
-    <figure>
-      <img src="images/fig1_teaser.png" alt="Fig. 1">
-      <figcaption>Fig. 1: GOMA solving the tangram puzzle on our TangramBench. Given the target assembly (right), we focus on the complex task of coordinating feasible object motions constrained to the support plane. GOMA predicts object motions that avoid deadlocks and collisions under varying clearance to achieve the final assembly.</figcaption>
+    <figure class="teaser">
+        <img src="images/hero_figure_modern.png" alt="Fig. 1">
+        <figcaption>Fig. 1: GOMA solving the tangram puzzle on our TangramBench. Given the target assembly (right), we focus on the complex task of coordinating feasible object motions constrained to the support plane. GOMA predicts object motions that avoid deadlocks and collisions under varying clearance to achieve the final assembly.</figcaption>
     </figure>
   </div>
 </section>
